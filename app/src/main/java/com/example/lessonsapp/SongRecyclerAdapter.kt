@@ -7,18 +7,20 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.ViewHolder
 
 class SongRecyclerAdapter(
     private val context: Context,
     private val list: List<SongModel>,
-    private val onClickListener: (SongModel) -> Unit,
+    private val onClickListener: (SongModel) -> Unit
 ) : RecyclerView.Adapter<SongRecyclerAdapter.SongViewHolder>() {
 
-    override fun getItemCount(): Int = list.size
+    private var onItemClickListener: ((SongModel) -> Unit)? = null
+
+    fun setOnItemClickListener(listener: (SongModel) -> Unit) {
+        onItemClickListener = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongViewHolder {
-        // Criando a view (layout) que vamos colocar os dados do elemento[i]
         val view = LayoutInflater.from(context).inflate(R.layout.it_song_list, parent, false)
         return SongViewHolder(view)
     }
@@ -28,20 +30,16 @@ class SongRecyclerAdapter(
         holder.bind(song, onClickListener)
     }
 
-    class SongViewHolder(view: View) : ViewHolder(view) {
-        // Acessando as views do layout através dos IDs
-        val songCover: ImageView = view.findViewById(R.id.ivSongCover)
-        val songTitle: TextView = view.findViewById(R.id.tvSongTitle)
-        val songArtist: TextView = view.findViewById(R.id.tvSongArtist)
+    override fun getItemCount(): Int = list.size
+
+    class SongViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private val songCover: ImageView = view.findViewById(R.id.ivSongCover)
+        private val songTitle: TextView = view.findViewById(R.id.tvSongTitle)
+        private val songArtist: TextView = view.findViewById(R.id.tvSongArtist)
 
         fun bind(song: SongModel, onClickListener: (SongModel) -> Unit) {
-            // colocando a imagem do elemento[i] da lista no ImageView
             songCover.setImageResource(song.image)
-
-            // colocando o titulo do elemento[i] da lista no TextView
             songTitle.text = song.title
-
-            // colocando o artista do elemento[i] da lista no Textview
             songArtist.text = song.artist
 
             itemView.setOnClickListener {

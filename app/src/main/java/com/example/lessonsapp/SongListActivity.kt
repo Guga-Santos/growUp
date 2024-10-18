@@ -1,5 +1,6 @@
 package com.example.lessonsapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.LayoutDirection
 import android.widget.ArrayAdapter
@@ -30,8 +31,15 @@ class SongListActivity : AppCompatActivity() {
             SongModel("Título 7", "Artista 7", "Álbum 7", R.drawable.linkin_park),
         )
         // Adapter de ListView
-        val adapter = SongRecyclerAdapter(this, songList) {
-            showMessage(this, "clicou na música: ${it.title}")
+        val adapter = SongRecyclerAdapter(this, songList) {selectedSong ->
+
+            val intent = Intent(this, SongDetailsActivity::class.java).apply {
+                putExtra("songTitle", selectedSong.title)
+                putExtra("songArtist", selectedSong.artist)
+                putExtra("songAlbum", selectedSong.album)
+                putExtra("songImage", selectedSong.image)
+            }
+            startActivity(intent)
         }
 
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -39,6 +47,16 @@ class SongListActivity : AppCompatActivity() {
         recyclerView.apply {
             this.adapter = adapter
             this.layoutManager = layoutManager
+        }
+
+        adapter.setOnItemClickListener { song ->
+            val intent = Intent(this, SongDetailsActivity::class.java).apply {
+                putExtra("songTitle", song.title)
+                putExtra("songArtist", song.artist)
+                putExtra("songAlbum", song.album)
+                putExtra("songImage", song.image)
+            }
+            startActivity(intent)
         }
     }
 }
